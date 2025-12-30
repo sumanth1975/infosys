@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Fake Job Detection</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            margin: 0;
+            background: linear-gradient(135deg, #6b73ff, #7f53ac);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .page {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .card {
+            background: #fff;
+            width: 400px;
+            max-width: 95%;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+            text-align: center;
+        }
+
+        .title {
+            font-size: 28px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        input, textarea {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border-radius: 10px;
+            border: 1px solid #ccc;
+        }
+
+        textarea {
+            height: 140px;
+            resize: none;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            margin-top: 15px;
+            background: #6b73ff;
+            color: #fff;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #5a62e0;
+        }
+
+        .toggle-text {
+            margin-top: 15px;
+            font-size: 14px;
+        }
+
+        .toggle-link {
+            color: #6b73ff;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        #msg {
+            margin-top: 10px;
+            color: red;
+        }
+
+        #prediction {
+            font-size: 22px;
+            font-weight: bold;
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        li {
+            color: red;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="page">
+
+    <!-- AUTH -->
+    <div class="card" id="authCard">
+        <h1 class="title" id="formTitle">Login</h1>
+
+        <div id="loginForm">
+            <input id="username" placeholder="Username">
+            <input id="password" type="password" placeholder="Password">
+            <button onclick="login()">Login</button>
+            <p class="toggle-text">
+                Don't have an account?
+                <span class="toggle-link" onclick="toggleForm()">Register</span>
+            </p>
+        </div>
+
+        <div id="registerForm" style="display:none;">
+            <input id="regUsername" placeholder="Username">
+            <input id="regEmail" type="email" placeholder="Email">
+            <input id="regPassword" type="password" placeholder="Password">
+            <input id="regConfirmPassword" type="password" placeholder="Confirm Password">
+            <button onclick="register()">Register</button>
+            <p class="toggle-text">
+                Already have an account?
+                <span class="toggle-link" onclick="toggleForm()">Login</span>
+            </p>
+        </div>
+
+        <p id="msg"></p>
+    </div>
+
+    <!-- JOB CHECK -->
+    <div class="card" id="jobCard" style="display:none;">
+        <h1 class="title">Fake Job Detection</h1>
+
+        <textarea id="jobText" placeholder="Enter job description..."></textarea>
+        <input type="file" id="imageInput" accept="image/*">
+
+        <button onclick="analyzeJob()">Check Job</button>
+
+        <p id="prediction">---</p>
+        <p>Word Count: <span id="words">0</span></p>
+        <ul id="flags"></ul>
+    </div>
+
+</div>
+
+<script>
+function toggleForm() {
+    loginForm.style.display =
+        loginForm.style.display === "none" ? "block" : "none";
+    registerForm.style.display =
+        registerForm.style.display === "none" ? "block" : "none";
+    formTitle.innerText =
+        formTitle.innerText === "Login" ? "Register" : "Login";
+}
+
+function login() {
+    fetch("/login", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({
+            username: username.value,
+            password: password.value
+        })
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.role) {
+            authCard.style.display = "none";
+            jobCard.style.display = "block";
+        } else {
+            msg.innerText = "Invalid credentials";
+        }
+    });
+}
+
+function register() {
+    if (regPassword.value !== regConfirmPassword.value) {
+        msg.innerText = "Passwords do not match";
+        return;
+    }
+
+    fetch("/register", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({
+            username: regUsername.value,
+            email: regEmail.value,
+            password: regPassword.value
+        })
+    })
+    .then(res => res.json())
+    .then(data => {
+        msg.innerText = data.success
+            ? "Registered successfully. Login now."
+            : data.message;
+        if (data.success) toggleForm();
+    });
+}
+
+function analyzeJob() {
+    const formData = new FormData();
+    formData.append("text", jobText.value);
+    if (imageInput.files[0]) {
+        formData.append("image", imageInput.files[0]);
+    }
+
+    fetch("/predict", {
+        method: "POST",
+        body: formData
+    })
+    .then(res => res.json())
+    .then(data => {
+        prediction.innerText = data.result;
+        prediction.style.color = data.prediction === 1 ? "red" : "green";
+        words.innerText = data.length;
+
+        flags.innerHTML = "";
+        if (data.flags.length === 0) {
+            flags.innerHTML = "<li>No suspicious indicators</li>";
+        } else {
+            data.flags.forEach(f => flags.innerHTML += `<li>${f}</li>`);
+        }
+    });
+}
+</script>
+
+</body>
+</html>

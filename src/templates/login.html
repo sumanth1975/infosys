@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Login / Register</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+
+<div class="page">
+    <div class="card">
+        <h1 class="title" id="formTitle">Login</h1>
+
+        <div id="loginForm">
+            <input id="username" placeholder="Username">
+            <input id="password" type="password" placeholder="Password">
+            <button onclick="login()">Login</button>
+            <p class="toggle-text">
+                Don't have an account?
+                <span class="toggle-link" onclick="toggleForm()">Register</span>
+            </p>
+        </div>
+
+        <div id="registerForm" style="display:none;">
+            <input id="regUsername" placeholder="Username">
+            <input id="regEmail" type="email" placeholder="Email">
+            <input id="regPassword" type="password" placeholder="Password">
+            <input id="regConfirmPassword" type="password" placeholder="Confirm Password">
+            <button onclick="register()">Register</button>
+            <p class="toggle-text">
+                Already have an account?
+                <span class="toggle-link" onclick="toggleForm()">Login</span>
+            </p>
+        </div>
+
+        <p id="msg"></p>
+    </div>
+</div>
+
+<script src="/static/app.js"></script>
+</body>
+</html>
