@@ -1,0 +1,48 @@
+body {
+    font-family: Arial;
+    background: linear-gradient(120deg,#667eea,#764ba2);
+    color: white;
+}
+
+.auth-card {
+    width: 350px;
+    margin: 100px auto;
+    background: white;
+    color: black;
+    padding: 25px;
+    border-radius: 10px;
+}
+
+input, textarea {
+    width: 100%;
+    margin: 10px 0;
+    padding: 10px;
+}
+
+button {
+    width: 100%;
+    background: #ff7a18;
+    border: none;
+    padding: 10px;
+    color: white;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+nav a {
+    margin: 10px;
+    color: white;
+}
+
+.cards {
+    display: flex;
+    gap: 20px;
+    padding: 20px;
+}
+
+.card {
+    background: white;
+    color: black;
+    padding: 20px;
+    border-radius: 10px;
+}

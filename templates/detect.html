@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Job Detection</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+<h2>Fake Job Detection</h2>
+
+<form method="POST">
+    <textarea name="jobtext" placeholder="Paste job description"></textarea>
+    <button>Detect from Text</button>
+</form>
+
+<form method="POST" enctype="multipart/form-data">
+    <input type="file" name="jobimage">
+    <button>Detect from Image</button>
+</form>
+
+{% if result %}
+<h3>Result: {{ result }}</h3>
+{% endif %}
+
+<a href="/dashboard">Back</a>
+</body>
+</html>
