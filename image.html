@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Image Job Prediction</title>
+    <style>
+        body {
+            font-family: Arial;
+            background: #f6f5f7;
+            text-align: center;
+            padding: 50px;
+        }
+        .card {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            width: 400px;
+            margin: auto;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.1);
+        }
+        button {
+            background: #FF4B2B;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 20px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <h2>Upload Job Poster Image</h2>
+    <input type="file" id="imageInput" accept="image/*"><br><br>
+    <button onclick="uploadImage()">Predict</button>
+
+    <div id="result" style="margin-top:20px;"></div>
+</div>
+
+<script>
+function uploadImage() {
+    const fileInput = document.getElementById('imageInput');
+    if (!fileInput.files.length) {
+        alert("Please upload an image");
+        return;
+    }
+
+    const formData = new FormData();
+    formData.append('image', fileInput.files[0]);
+
+    fetch('http://localhost:5000/predict-image', {
+        method: 'POST',
+        body: formData
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.success) {
+            document.getElementById('result').innerHTML = `
+                <h3>${data.prediction}</h3>
+                <p>Confidence: ${data.confidence}%</p>
+            `;
+        } else {
+            alert(data.message);
+        }
+    })
+    .catch(() => alert("Image service not running"));
+}
+</script>
+
+</body>
+</html>

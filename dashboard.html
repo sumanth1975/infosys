@@ -1,0 +1,743 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Fake Job Prediction System</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:400,800" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background: #f6f5f7;
+            min-height: 100vh;
+        }
+
+        .navbar {
+            background: linear-gradient(to right, #FF4B2B, #FF416C);
+            color: white;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: 800;
+            color: white;
+            text-decoration: none;
+            letter-spacing: 1px;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .user-name {
+            font-weight: 600;
+        }
+
+        .logout-btn {
+            background: white;
+            color: #FF4B2B;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+
+        .logout-btn:hover {
+            background: #f0f0f0;
+            transform: scale(1.05);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+
+        .welcome-section {
+            text-align: center;
+            margin-bottom: 40px;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.08);
+        }
+
+        .welcome-section h1 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 36px;
+        }
+
+        .welcome-section p {
+            color: #666;
+            font-size: 18px;
+        }
+
+        .dashboard-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.08);
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+            text-align: center;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 40px rgba(0,0,0,0.15);
+        }
+
+        .card-icon {
+            font-size: 48px;
+            color: #FF4B2B;
+            margin-bottom: 20px;
+        }
+
+        .card h2 {
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 24px;
+        }
+
+        .card p {
+            color: #666;
+            line-height: 1.6;
+        }
+
+        .check-job-card {
+            background: linear-gradient(135deg, #FF4B2B, #FF416C);
+            color: white;
+        }
+
+        .check-job-card .card-icon,
+        .check-job-card h2,
+        .check-job-card p {
+            color: white;
+        }
+
+        .history-section {
+            background: white;
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.08);
+        }
+
+        .history-section h2 {
+            color: #333;
+            margin-bottom: 25px;
+            font-size: 28px;
+            border-bottom: 2px solid #f0f0f0;
+            padding-bottom: 15px;
+        }
+
+        .history-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .history-table th {
+            background: #f8f9fa;
+            color: #333;
+            text-align: left;
+            padding: 15px;
+            font-weight: 600;
+            border-bottom: 2px solid #dee2e6;
+        }
+
+        .history-table td {
+            padding: 15px;
+            border-bottom: 1px solid #dee2e6;
+            color: #555;
+        }
+
+        .history-table tr:hover {
+            background: #f8f9fa;
+        }
+
+        .prediction-badge {
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            display: inline-block;
+        }
+
+        .badge-fake {
+            background: #ffebee;
+            color: #c62828;
+        }
+
+        .badge-real {
+            background: #e8f5e8;
+            color: #2e7d32;
+        }
+
+        .no-history {
+            text-align: center;
+            color: #999;
+            padding: 40px;
+            font-size: 18px;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+        }
+
+        .confidence-bar {
+            height: 8px;
+            background: #e0e0e0;
+            border-radius: 4px;
+            margin-top: 5px;
+            overflow: hidden;
+        }
+
+        .confidence-fill {
+            height: 100%;
+            border-radius: 4px;
+        }
+
+        .confidence-fake {
+            background: linear-gradient(to right, #ff5252, #ff1744);
+        }
+
+        .confidence-real {
+            background: linear-gradient(to right, #4caf50, #2e7d32);
+        }
+        .logout-btn {
+    background: white;
+    color: #FF4B2B;
+    border: none;
+    padding: 8px 20px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-weight: bold;
+    }
+    /* ===== STATISTICS UI ===== */
+.stats-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 25px;
+    margin-top: 30px;
+}
+
+.stat-card {
+    background: white;
+    border-radius: 15px;
+    padding: 25px;
+    box-shadow: 0 10px 35px rgba(0,0,0,0.08);
+    text-align: center;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.stat-icon {
+    margin-bottom: 12px;
+}
+
+.stat-title {
+    margin-bottom: 6px;
+}
+
+.stat-value {
+    font-size: 34px;
+    font-weight: 800;
+    line-height: 1;
+}
+
+
+.stat-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 18px 45px rgba(0,0,0,0.15);
+}
+
+.stat-icon {
+    font-size: 38px;
+    margin-bottom: 12px;
+}
+
+.stat-title {
+    font-size: 15px;
+    color: #777;
+    margin-bottom: 8px;
+    font-weight: 600;
+}
+
+.stat-value {
+    font-size: 32px;
+    font-weight: 800;
+    color: #333;
+}
+
+/* Color variants */
+.stat-total .stat-icon { color: #3f51b5; }
+.stat-real .stat-icon { color: #4caf50; }
+.stat-fake .stat-icon { color: #ff5252; }
+.stat-text .stat-icon { color: #ff9800; }
+.stat-image .stat-icon { color: #009688; }
+
+/* Section title */
+.stats-title {
+    margin-top: 40px;
+    font-size: 28px;
+    font-weight: 800;
+    color: #333;
+    text-align: center;
+}
+/* ===== CHART CONTAINER ===== */
+.charts-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 24px;
+  margin-top: 25px;
+}
+
+/* ===== CHART CARD ===== */
+.chart-card {
+  background: #ffffff;
+  border-radius: 14px;
+  padding: 16px;
+  height: 260px;              /* 🔑 FIX */
+  box-shadow: 0 10px 28px rgba(0,0,0,0.08);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ===== CANVAS FIX ===== */
+.chart-card {
+  height: 320px;
+}
+
+.chart-card canvas {
+  width: 100% !important;
+  height: 100% !important;
+}
+
+
+
+
+        @media (max-width: 768px) {
+            .dashboard-cards {
+                grid-template-columns: 1fr;
+            }
+            
+            .navbar {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <a href="/dashboard" class="logo">Fake Job Predictor</a>
+        <div class="user-info">
+    <span class="user-name" id="userName">Welcome User</span>
+
+    <button class="logout-btn" onclick="downloadMyHistory()">
+        <i class="fas fa-download"></i> Download History
+    </button>
+
+    <button class="logout-btn" onclick="logout()">
+        <i class="fas fa-sign-out-alt"></i> Logout
+    </button>
+</div>
+
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container">
+        <!-- Welcome Section -->
+        <div class="welcome-section">
+            <h1>Welcome to Your Dashboard</h1>
+            <p>Analyze job postings and protect yourself from fraudulent opportunities</p>
+        </div>
+
+        <!-- Dashboard Cards -->
+        <div class="dashboard-cards">
+            <div class="card check-job-card" onclick="goToCheckJob()">
+                <div class="card-icon">
+                    <i class="fas fa-search"></i>
+                </div>
+                <h2>Check Job Posting</h2>
+                <p>Analyze a job posting to determine if it's legitimate or fraudulent</p>
+            </div>
+
+            <div class="card" onclick="refreshHistory()">
+                <div class="card-icon">
+                    <i class="fas fa-history"></i>
+                </div>
+                <h2>Check History</h2>
+                <p>View your previous job posting analyses</p>
+            </div>
+
+            <div class="card" onclick="showStats()">
+                <div class="card-icon">
+                    <i class="fas fa-chart-bar"></i>
+                </div>
+                <h2>Statistics</h2>
+                <p>View your analysis statistics and patterns</p>
+            </div>
+        </div>
+ 
+        <!-- History Section -->
+        <div class="history-section">
+            <h2>Recent Job Checks</h2>
+            <div id="historyContent" class="loading">
+                Loading your history...
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let userHistoryCache = [];
+
+        // Check if user is logged in
+        document.addEventListener('DOMContentLoaded', function() {
+            const user = JSON.parse(localStorage.getItem('user'));
+            
+            if (!user) {
+                window.location.href = '/';
+                return;
+            }
+            
+            // Set user name
+            document.getElementById('userName').textContent = `Welcome, ${user.name}`;
+            
+            // Load history
+            loadHistory();
+        });
+
+        // Load user's history
+        async function loadHistory() {
+            const historyContent = document.getElementById('historyContent');
+            
+            
+            try {
+                const response = await fetch('/get-history', {
+                    headers: {
+                        Authorization: "Bearer " + localStorage.getItem("token")
+
+                    }
+                });
+                
+                const data = await response.json();
+                userHistoryCache = data.history || [];
+
+                
+                if (data.success && data.history.length > 0) {
+                    let tableHTML = `
+                        <table class="history-table">
+                            <thead>
+                                <tr>
+                                    <th>Job Title</th>
+                                    <th>Prediction</th>
+                                    <th>Confidence</th>
+                                    <th>Date</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                    `;
+                    
+                    data.history.forEach(check => {
+                        const badgeClass = check.prediction === 'Fake' ? 'badge-fake' : 'badge-real';
+                        const confidenceClass = check.prediction === 'Fake' ? 'confidence-fake' : 'confidence-real';
+                        
+                        tableHTML += `
+                            <tr>
+                                <td>${check.title || 'Untitled Job'}</td>
+                                <td>
+                                    <span class="prediction-badge ${badgeClass}">
+                                        ${check.prediction}
+                                    </span>
+                                </td>
+                                <td>
+                                    ${check.confidence}%
+                                    <div class="confidence-bar">
+                                        <div class="confidence-fill ${confidenceClass}" 
+                                             style="width: ${check.confidence}%"></div>
+                                    </div>
+                                </td>
+                                <td>${new Date(check.created_at).toLocaleDateString()}</td>
+                            </tr>
+                        `;
+                    });
+                    
+                    tableHTML += `
+                            </tbody>
+                        </table>
+                    `;
+                    
+                    historyContent.innerHTML = tableHTML;
+                } else {
+                    historyContent.innerHTML = `
+                        <div class="no-history">
+                            <i class="fas fa-history" style="font-size: 48px; margin-bottom: 20px;"></i>
+                            <p>No job checks yet. Start by analyzing your first job posting!</p>
+                            <button onclick="goToCheckJob()" style="
+                                background: #FF4B2B;
+                                color: white;
+                                border: none;
+                                padding: 10px 30px;
+                                border-radius: 20px;
+                                cursor: pointer;
+                                margin-top: 20px;
+                                font-weight: bold;
+                            ">
+                                Check a Job
+                            </button>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                historyContent.innerHTML = `
+                    <div class="no-history">
+                        <i class="fas fa-exclamation-triangle" style="font-size: 48px; margin-bottom: 20px; color: #ff4b5c;"></i>
+                        <p>Unable to load history. Please try again.</p>
+                    </div>
+                `;
+            }
+        }
+
+        function goToCheckJob() {
+            window.location.href = '/checkjob';
+        }
+
+        function refreshHistory() {
+            loadHistory();
+        }
+
+function drawUserCharts(data) {
+
+  if (userPie) userPie.destroy();
+  if (userBar) userBar.destroy();
+
+  // PIE
+  userPie = new Chart(document.getElementById("userPieChart"), {
+    type: "doughnut",
+    data: {
+      labels: ["Fake", "Real"],
+      datasets: [{
+        data: [data.stats.fake_jobs, data.stats.real_jobs],
+        backgroundColor: ["#ff5252", "#4caf50"]
+      }]
+    },
+    options: chartOptions
+  });
+
+  // BAR
+  const daily = data.daily && data.daily.labels.length
+    ? data.daily
+    : buildDailyData(userHistoryCache);
+
+  if (daily.labels.length === 0) {
+    daily.labels = ["Today"];
+    daily.counts = [0];
+  }
+
+  userBar = new Chart(document.getElementById("userBarChart"), {
+    type: "bar",
+    data: {
+      labels: daily.labels,
+      datasets: [{
+        label: "Daily Predictions",
+        data: daily.counts,
+        backgroundColor: "#3f51b5",
+        borderRadius: 6
+      }]
+    },
+    options: chartOptions
+  });
+}
+
+
+
+function buildDailyData(history) {
+  const map = {};
+
+  history.forEach(item => {
+    const date = new Date(item.created_at).toLocaleDateString();
+    map[date] = (map[date] || 0) + 1;
+  });
+
+  return {
+    labels: Object.keys(map),
+    counts: Object.values(map)
+  };
+}
+
+
+let userPie = null;
+let userBar = null;
+
+function showStats() {
+
+  fetch("/user/statistics?include_history=true", {
+    headers: {
+      "Authorization": "Bearer " + localStorage.getItem("token")
+    }
+  })
+  .then(res => res.json())
+  .then(data => {
+
+    if (!data.success) {
+      alert("Failed to load statistics");
+      return;
+    }
+
+    const s = data.stats;
+    const container = document.querySelector(".container");
+
+    let box = document.getElementById("statsBox");
+    if (box) box.remove();
+
+    box = document.createElement("div");
+    box.id = "statsBox";
+
+    box.innerHTML = `
+      <h2 class="stats-title">📊 Your Job Analysis Statistics</h2>
+
+      <div class="stats-container">
+        <div class="stat-card stat-total">
+          <div class="stat-icon">📁</div>
+          <div class="stat-title">Total Checks</div>
+          <div class="stat-value">${s.total_checks}</div>
+        </div>
+
+        <div class="stat-card stat-real">
+        <div class="stat-icon">
+         <i class="fas fa-check-circle"></i>
+        </div>
+          <div class="stat-title">Real Jobs</div>
+          <div class="stat-value">${s.real_jobs}</div>
+        </div>
+
+        <div class="stat-card stat-fake">
+  <div class="stat-icon">
+    <i class="fas fa-user-times"></i>
+  </div>
+          <div class="stat-title">Fake Jobs</div>
+          <div class="stat-value">${s.fake_jobs}</div>
+        </div>
+
+        <div class="stat-card stat-text">
+          <div class="stat-icon">📝</div>
+          <div class="stat-title">Text Checks</div>
+          <div class="stat-value">${s.text_checks}</div>
+        </div>
+
+        <div class="stat-card stat-image">
+          <div class="stat-icon">🖼</div>
+          <div class="stat-title">Image Checks</div>
+          <div class="stat-value">${s.image_checks}</div>
+        </div>
+      </div>
+
+      <div class="charts-grid" style="margin-top:35px;">
+        <div class="chart-card">
+          <canvas id="userPieChart"></canvas>
+        </div>
+
+        <div class="chart-card">
+          <canvas id="userBarChart"></canvas>
+        </div>
+      </div>
+    `;
+
+    container.appendChild(box);
+box.scrollIntoView({ behavior: "smooth" });
+
+// ⏳ wait for DOM to render, then draw charts
+setTimeout(() => drawUserCharts(data), 150);
+
+
+    box.scrollIntoView({ behavior: "smooth" });
+  });
+}
+
+
+
+function logout() {
+    localStorage.removeItem('user');
+    window.location.href = '/';
+}
+
+function downloadMyHistory() {
+    fetch("http://127.0.0.1:5000/user/download-history", {
+        headers: {
+            "Authorization": "Bearer " + localStorage.getItem("token")
+        }
+    })
+    .then(res => res.blob())
+    .then(blob => {
+        const a = document.createElement("a");
+        a.href = URL.createObjectURL(blob);
+        a.download = "my_prediction_history.csv";
+        a.click();
+    })
+    .catch(() => alert("Failed to download history"));
+}
+const chartOptions = {
+  responsive: true,
+  maintainAspectRatio: false,
+  plugins: {
+    legend: {
+      position: "bottom",
+      labels: {
+        boxWidth: 10,
+        font: { size: 11 }
+      }
+    }
+  },
+  scales: {
+    y: {
+      beginAtZero: true,
+      ticks: {
+        precision: 0,
+        font: { size: 11 }
+      }
+    },
+    x: {
+      ticks: {
+        font: { size: 11 }
+      }
+    }
+  }
+};
+    </script>
+</body>
+</html>

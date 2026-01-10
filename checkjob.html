@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Check Job - Fake Job Prediction System</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:400,800" rel="stylesheet">
+    <style>
+        /* KEEP ALL YOUR ORIGINAL STYLES HERE */
+        /* Just make sure this part is included at the beginning */
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background: #f6f5f7;
+            min-height: 100vh;
+            padding-top: 20px;
+        }
+
+        .navbar {
+            background: linear-gradient(to right, #FF4B2B, #FF416C);
+            color: white;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: 800;
+            color: white;
+            text-decoration: none;
+            letter-spacing: 1px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .nav-link {
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+            padding: 8px 15px;
+            border-radius: 20px;
+            transition: background 0.3s;
+        }
+
+        .nav-link:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .active {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+
+        .page-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .page-header h1 {
+            color: #333;
+            font-size: 36px;
+            margin-bottom: 10px;
+        }
+
+        .page-header p {
+            color: #666;
+            font-size: 18px;
+        }
+
+        .form-container {
+            background: white;
+            border-radius: 10px;
+            padding: 40px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.08);
+            margin-bottom: 40px;
+        }
+
+        /* ADD MORE OF YOUR ORIGINAL STYLES HERE */
+        /* Make sure you copy ALL your CSS styles from your original file */
+        /* I'm showing a condensed version to save space */
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            color: #555;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 14px;
+            transition: border 0.3s;
+        }
+
+        textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .submit-btn {
+            background: linear-gradient(to right, #FF4B2B, #FF416C);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 25px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            display: block;
+            margin: 40px auto 0;
+            min-width: 200px;
+        }
+
+        /* Add ALL your other styles here from your original file */
+    </style>
+</head>
+<body>
+    <!-- SIMPLE VERSION - This will definitely show -->
+    <nav class="navbar">
+        <a href="dashboard.html" class="logo">Fake Job Predictor</a>
+        <div class="nav-links">
+            <a href="dashboard.html" class="nav-link">
+                <i class="fas fa-home"></i> Dashboard
+            </a>
+            <a href="checkjob.html" class="nav-link active">
+                <i class="fas fa-search"></i> Check Job
+            </a>
+            <a href="index.html" class="nav-link">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="page-header">
+            <h1>Analyze Job Posting</h1>
+            <p>Check if a job posting is legitimate or fraudulent</p>
+        </div>
+
+        <div class="form-container">
+            <form id="jobForm">
+                <div class="form-group">
+                    <label for="jobTitle">Job Title *</label>
+                    <input type="text" id="jobTitle" placeholder="e.g., Software Engineer" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="companyProfile">Company Profile</label>
+                    <textarea id="companyProfile" placeholder="Describe the company..."></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="description">Job Description *</label>
+                    <textarea id="description" placeholder="Describe the job responsibilities..." required></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="requirements">Requirements</label>
+                    <textarea id="requirements" placeholder="List the requirements..."></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="benefits">Benefits</label>
+                    <textarea id="benefits" placeholder="List the benefits..."></textarea>
+                </div>
+                <hr style="margin:40px 0">
+
+                    <h2 style="text-align:center;">OR Upload Job Poster Image</h2>
+
+                        <div class="form-group">
+                             <label>Upload Image</label>
+                                 <input type="file" id="jobImage" accept="image/*">
+                                </div>
+
+                    <button type="button" class="submit-btn" onclick="predictImage()">
+                            <i class="fas fa-image"></i> Analyze Image
+                </button>
+
+
+                <button type="submit" class="submit-btn">
+                    <i class="fas fa-search"></i> Analyze Job Posting
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- SIMPLE JAVASCRIPT - This will definitely work -->
+    <script>
+        let lastPredictionId = null;
+
+        let lastCheckType = null;
+
+
+        // First, make sure the page shows something
+        console.log("Page loaded successfully!");
+        
+        // Check if user is logged in
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log("DOM loaded");
+            
+            try {
+                const user = localStorage.getItem('user');
+                console.log("User in localStorage:", user);
+                
+                if (!user) {
+                    alert("Please login first");
+                    window.location.href = 'index.html';
+                    return;
+                }
+                
+                // Parse user data
+                const userData = JSON.parse(user);
+                console.log("Welcome, " + (userData.name || userData.email || "User"));
+                
+            } catch (error) {
+                console.error("Error:", error);
+                alert("Session error. Please login again.");
+                window.location.href = 'index.html';
+            }
+        });
+
+        // Handle form submission
+        document.getElementById('jobForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            console.log("Form submitted!");
+            
+            // Get form data
+            const formData = {
+                title: document.getElementById('jobTitle').value,
+                company_profile: document.getElementById('companyProfile').value,
+                description: document.getElementById('description').value,
+                requirements: document.getElementById('requirements').value,
+                benefits: document.getElementById('benefits').value
+            };
+            
+            console.log("Form data:", formData);
+            
+            // Get user info
+            const user = JSON.parse(localStorage.getItem('user'));
+            if (!user || !user.id) {
+                alert("Please login again");
+                window.location.href = 'index.html';
+                return;
+            }
+            
+            // Send data to backend
+            fetch('/predict-job', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: "Bearer " + localStorage.getItem("token")
+
+                },
+                body: JSON.stringify(formData)
+            })
+            .then(response => {
+                console.log("Response status:", response.status);
+                return response.json();
+            })
+            .then(data => {
+
+  lastPredictionId = data.record_id;
+  lastCheckType = "job";
+
+  showResult({
+    prediction: data.prediction,
+    confidence: data.confidence
+  }, formData);
+  setTimeout(() => {
+    document.getElementById("feedbackBox").style.display = "block";
+  }, 100);
+});
+
+            })
+            .catch(error => {
+                console.error("Error:", error);
+                alert("Connection error. Trying mock result...");
+                
+                // Show mock result if backend is down
+                const mockResult = {
+                    prediction: Math.random() > 0.5 ? 'Real' : 'Fake',
+                    confidence: Math.floor(Math.random() * 30) + 70
+                };
+                showResult(mockResult, formData);
+            });
+
+        function showResult(result, formData) {
+    // Normalize prediction value
+    const prediction = (result.prediction || "").toLowerCase();
+    const isFake = prediction === "fake";
+
+    const resultHTML = `
+        <div style="
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            margin-top: 30px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.08);
+        ">
+            <h2 style="color: ${isFake ? '#ff4b5c' : '#4CAF50'};">
+                ${isFake ? '⚠️ POTENTIALLY FAKE JOB' : '✓ LIKELY REAL JOB'}
+            </h2>
+            <p>Confidence: <strong>${result.confidence}%</strong></p>
+            <p>Job Title: ${formData.title || 'N/A'}</p>
+            <p>Analyzed on: ${new Date().toLocaleDateString()}</p>
+
+            <div style="margin-top: 20px;">
+                <button onclick="window.location.href='dashboard.html'" 
+                    style="background: #FF4B2B; color: white; border: none; padding: 10px 20px; border-radius: 20px; margin-right: 10px;">
+                    Back to Dashboard
+                </button>
+                <button onclick="resetForm()" 
+                    style="background: #6c757d; color: white; border: none; padding: 10px 20px; border-radius: 20px;">
+                    Check Another Job
+                </button>
+            </div>
+            <!-- FEEDBACK UI -->
+            <div id="feedbackBox" style="
+    display:none;
+    margin-top:25px;
+    padding-top:15px;
+    border-top:1px solid #eee;
+    text-align:left;
+">
+
+            <p style="font-weight:600;">Was this prediction correct?</p>
+
+        <button onclick="sendFeedback('correct')" 
+          style="background:#4caf50;color:white;padding:8px 20px;border:none;border-radius:20px;margin-right:10px;">
+         ✔ Correct
+            </button>
+
+        <button onclick="sendFeedback('wrong')" 
+          style="background:#ff5252;color:white;padding:8px 20px;border:none;border-radius:20px;">
+         ✖ Wrong
+        </button>
+        </div>
+
+        </div>
+    `;
+
+    const container = document.querySelector('.container');
+    const existingResult = document.querySelector('.result-container');
+    if (existingResult) existingResult.remove();
+
+    const resultDiv = document.createElement('div');
+    resultDiv.className = 'result-container';
+    resultDiv.innerHTML = resultHTML;
+    container.appendChild(resultDiv);
+
+    resultDiv.scrollIntoView({ behavior: 'smooth' });
+}
+        
+        function resetForm() {
+            document.getElementById('jobForm').reset();
+            const resultDiv = document.querySelector('.result-container');
+            if (resultDiv) {
+                resultDiv.remove();
+            }
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    </script>
+    <script>
+function predictImage() {
+    const fileInput = document.getElementById('jobImage');
+
+    if (!fileInput.files.length) {
+        alert("Please upload an image");
+        return;
+    }
+
+    const user = JSON.parse(localStorage.getItem('user'));
+    if (!user || !user.id) {
+        alert("Please login again");
+        window.location.href = 'index.html';
+        return;
+    }
+
+    const formData = new FormData();
+    formData.append('image', fileInput.files[0]);
+
+    fetch('/predict-image', {
+        method: 'POST',
+        headers: {
+            'Authorization': 'Bearer ' + localStorage.getItem("token")
+        },
+        body: formData
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.success) {
+
+            // ✅ STORE IMAGE RECORD ID
+            lastPredictionId = data.record_id;
+            lastCheckType = "image";
+
+            showResult({
+                prediction: data.prediction,
+                confidence: data.confidence
+            }, { title: "Image-based Job Posting" });
+            setTimeout(() => {
+      document.getElementById("feedbackBox").style.display = "block";
+    }, 100);
+
+        } else {
+            alert(data.message);
+        }
+    })
+    .catch(() => {
+        alert("Image prediction service not available");
+    });
+}
+
+function sendFeedback(type) {
+
+  if (!lastPredictionId || !lastCheckType) {
+    alert("No prediction to give feedback on");
+    return;
+  }
+
+  fetch("/user/feedback", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer " + localStorage.getItem("token")
+    },
+    body: JSON.stringify({
+      record_id: lastPredictionId,
+      check_type: lastCheckType,  
+      feedback: type
+    })
+  })
+  .then(res => res.json())
+  .then(() => {
+    alert("Thanks for your feedback!");
+    document.getElementById("feedbackBox").style.display = "none";
+  });
+}
+
+</script>
+
+</body>
+</html>

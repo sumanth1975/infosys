@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fake Job Prediction System - Sign In/Up</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:400,800" rel="stylesheet">
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #f6f5f7;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            font-family: 'Montserrat', sans-serif;
+            height: 100vh;
+            margin: -20px 0 50px;
+        }
+       
+        .app-title {
+            text-align: center;
+            font-size: 38px;
+            font-weight: 800;
+            margin-top: 30px;
+            margin-bottom: 25px;
+            color: #ff4b5c;
+            letter-spacing: 1.5px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            animation: titleReveal 1.6s cubic-bezier(0.19, 1, 0.22, 1) forwards;
+        }
+
+        @keyframes titleReveal {
+            0% {
+                opacity: 0;
+                transform: translateY(-40px) scale(0.95);
+            }
+            60% {
+                opacity: 1;
+                transform: translateY(5px) scale(1.02);
+            }
+            100% {
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        h1 {
+            font-weight: bold;
+            margin: 0;
+        }
+
+        h2 {
+            text-align: center;
+        }
+
+        p {
+            font-size: 14px;
+            font-weight: 100;
+            line-height: 20px;
+            letter-spacing: 0.5px;
+            margin: 20px 0 30px;
+        }
+
+        span {
+            font-size: 12px;
+        }
+
+        a {
+            color: #333;
+            font-size: 14px;
+            text-decoration: none;
+            margin: 15px 0;
+        }
+
+        button {
+            border-radius: 20px;
+            border: 1px solid #FF4B2B;
+            background-color: #FF4B2B;
+            color: #FFFFFF;
+            font-size: 12px;
+            font-weight: bold;
+            padding: 12px 45px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            transition: transform 80ms ease-in;
+            cursor: pointer;
+        }
+
+        button:active {
+            transform: scale(0.95);
+        }
+
+        button:focus {
+            outline: none;
+        }
+
+        button.ghost {
+            background-color: transparent;
+            border-color: #FFFFFF;
+        }
+
+        form {
+            background-color: #FFFFFF;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            padding: 0 50px;
+            height: 100%;
+            text-align: center;
+        }
+
+        input {
+            background-color: #eee;
+            border: none;
+            padding: 12px 15px;
+            margin: 8px 0;
+            width: 100%;
+        }
+
+        .container {
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 14px 28px rgba(0,0,0,0.25), 
+                        0 10px 10px rgba(0,0,0,0.22);
+            position: relative;
+            overflow: hidden;
+            width: 768px;
+            max-width: 100%;
+            min-height: 480px;
+            margin-top: 20px;
+        }
+
+        .form-container {
+            position: absolute;
+            top: 0;
+            height: 100%;
+            transition: all 0.6s ease-in-out;
+        }
+
+        .sign-in-container {
+            left: 0;
+            width: 50%;
+            z-index: 2;
+        }
+
+        .container.right-panel-active .sign-in-container {
+            transform: translateX(100%);
+        }
+
+        .sign-up-container {
+            left: 0;
+            width: 50%;
+            opacity: 0;
+            z-index: 1;
+        }
+
+        .container.right-panel-active .sign-up-container {
+            transform: translateX(100%);
+            opacity: 1;
+            z-index: 5;
+            animation: show 0.6s;
+        }
+
+        @keyframes show {
+            0%, 49.99% {
+                opacity: 0;
+                z-index: 1;
+            }
+            
+            50%, 100% {
+                opacity: 1;
+                z-index: 5;
+            }
+        }
+
+        .overlay-container {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            width: 50%;
+            height: 100%;
+            overflow: hidden;
+            transition: transform 0.6s ease-in-out;
+            z-index: 100;
+        }
+
+        .container.right-panel-active .overlay-container{
+            transform: translateX(-100%);
+        }
+
+        .overlay {
+            background: #FF416C;
+            background: -webkit-linear-gradient(to right, #FF4B2B, #FF416C);
+            background: linear-gradient(to right, #FF4B2B, #FF416C);
+            background-repeat: no-repeat;
+            background-size: cover;
+            background-position: 0 0;
+            color: #FFFFFF;
+            position: relative;
+            left: -100%;
+            height: 100%;
+            width: 200%;
+            transform: translateX(0);
+            transition: transform 0.6s ease-in-out;
+        }
+
+        .container.right-panel-active .overlay {
+            transform: translateX(50%);
+        }
+
+        .overlay-panel {
+            position: absolute;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            padding: 0 40px;
+            text-align: center;
+            top: 0;
+            height: 100%;
+            width: 50%;
+            transform: translateX(0);
+            transition: transform 0.6s ease-in-out;
+        }
+
+        .overlay-left {
+            transform: translateX(-20%);
+        }
+
+        .container.right-panel-active .overlay-left {
+            transform: translateX(0);
+        }
+
+        .overlay-right {
+            right: 0;
+            transform: translateX(0);
+        }
+
+        .container.right-panel-active .overlay-right {
+            transform: translateX(20%);
+        }
+
+        .social-container {
+            margin: 20px 0;
+        }
+
+        .social-container a {
+            border: 1px solid #DDDDDD;
+            border-radius: 50%;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0 5px;
+            height: 40px;
+            width: 40px;
+        }
+
+        footer {
+            background-color: #222;
+            color: #fff;
+            font-size: 14px;
+            bottom: 0;
+            position: fixed;
+            left: 0;
+            right: 0;
+            text-align: center;
+            z-index: 999;
+        }
+
+        footer p {
+            margin: 10px 0;
+        }
+
+        footer i {
+            color: red;
+        }
+
+        footer a {
+            color: #3c97bf;
+            text-decoration: none;
+        }
+
+        .error-message {
+            color: #ff4b5c;
+            font-size: 12px;
+            margin-top: 5px;
+            display: none;
+        }
+
+        .success-message {
+            color: #4CAF50;
+            font-size: 12px;
+            margin-top: 5px;
+            display: none;
+        }
+        .forgot-link {
+    margin-top: 12px;
+    margin-bottom: 20px;
+    font-size: 13px;
+    color: #ff4b5c;
+    cursor: pointer;
+    text-align: center;
+}
+
+.forgot-link:hover {
+    text-decoration: underline;
+}
+
+.forgot-container {
+    display: none;
+    width: 100%;
+    background: #ffffff;
+    padding: 26px;
+    margin-top: 20px;
+
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+}
+
+.forgot-container h3 {
+    margin-bottom: 18px;
+    text-align: center;
+}
+
+.forgot-container input {
+    width: 100%;
+    margin-bottom: 12px;
+}
+
+.forgot-container button {
+    width: 100%;
+    margin-top: 10px;
+    border-radius: 20px;
+}
+
+.back-login {
+    margin-top: 14px;
+    font-size: 12px;
+    color: #555;
+    cursor: pointer;
+    text-align: center;
+}
+.sign-in-container {
+    overflow-y: auto;
+}
+.back-login {
+    margin: 14px auto 0;       
+    font-size: 12px;
+    color: #ff4b5c;
+    cursor: pointer;
+    text-align: center;
+
+    width: fit-content;    
+    padding: 6px 16px;
+    border-radius: 18px;
+
+    background: transparent;
+
+    transition:
+        transform 0.25s ease,
+        box-shadow 0.25s ease,
+        background-color 0.25s ease,
+        color 0.25s ease;
+}
+
+/* POP / LIFT EFFECT */
+.back-login:hover {
+    background-color: rgba(255, 75, 92, 0.15);
+    color: #ff2f44;
+    transform: translateY(-3px);   /* 👈 pop up */
+    box-shadow: 0 6px 16px rgba(255, 75, 92, 0.35);
+}
+
+    </style>
+</head>
+<body>
+    <h2 class="app-title">Fake Job Prediction System</h2>
+    <div class="container" id="container">
+        <!-- Sign Up Form -->
+        <div class="form-container sign-up-container">
+            <form id="signupForm">
+                <h1>Create Account</h1>
+                <span>or use your email for registration</span>
+                <input type="text" id="signupName" placeholder="Name" required />
+                <input type="email" id="signupEmail" placeholder="Email" required />
+                <input type="password" id="signupPassword" placeholder="Password" minlength="6" required />
+                
+<!-- NEW: Confirm Password -->
+                <div style="position: relative; width: 100%;">
+                <input type="password" id="signupConfirmPassword" placeholder="Confirm Password" minlength="6" required />
+                <i class="fas fa-eye" onclick="togglePassword()" 
+                    style="position:absolute; right:15px; top:50%; transform:translateY(-50%); cursor:pointer;">
+                </i>
+                </div>
+
+                <div class="error-message" id="signupError"></div>
+                <div class="success-message" id="signupSuccess"></div>
+                <button type="submit">Sign Up</button>
+            </form>
+        </div>
+        
+        <!-- Sign In Form -->
+        <div class="form-container sign-in-container">
+            <form id="signinForm">
+                <h1>Sign in</h1>
+                <span>or use your account</span>
+                <input type="email" id="signinEmail" placeholder="Email" required />
+                
+                <div style="position: relative; width: 100%;">
+                <input type="password" id="signinPassword" placeholder="Password" required />
+                 <i class="fas fa-eye" onclick="toggleSigninPassword()" 
+                    style="position:absolute; right:15px; top:50%; transform:translateY(-50%); cursor:pointer;">
+                 </i>
+                </div>
+                <div class="forgot-link" onclick="showForgotForm()">
+            Forgot your password?
+        </div>
+
+                <div class="error-message" id="signinError"></div>
+                <button type="submit">Sign In</button>
+            </form>
+            <div class="forgot-container" id="forgotBox">
+        <h3>Reset Password</h3>
+
+        <input type="email" id="fpEmail" placeholder="Registered Email">
+
+        <input type="password" id="fpPassword" placeholder="New Password">
+
+        <input type="password" id="fpConfirmPassword" placeholder="Confirm Password">
+
+        <button onclick="resetPassword()">Reset Password</button>
+
+        <p id="fpMsg"></p>
+
+        <div class="back-login" onclick="hideForgotForm()">
+            ← Back to Login
+        </div>
+    </div>
+        </div>
+        
+        <!-- Overlay Section -->
+        <div class="overlay-container">
+            <div class="overlay">
+                <div class="overlay-panel overlay-left">
+                    <h1>Welcome Back!</h1>
+                    <p>To keep connected with us please login with your personal info</p>
+                    <button class="ghost" id="signIn">Sign In</button>
+                </div>
+                <div class="overlay-panel overlay-right">
+                    <h1>Hello, Friend!</h1>
+                    <p>Enter your personal details and start journey with us</p>
+                    <button class="ghost" id="signUp">Sign Up</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+        const signUpButton = document.getElementById('signUp');
+        const signInButton = document.getElementById('signIn');
+        const container = document.getElementById('container');
+        const signupForm = document.getElementById('signupForm');
+        const signinForm = document.getElementById('signinForm');
+
+        // Form switching
+        signUpButton.addEventListener('click', () => {
+            container.classList.add("right-panel-active");
+        });
+
+        signInButton.addEventListener('click', () => {
+            container.classList.remove("right-panel-active");
+        });
+
+        // Sign Up Form Submission
+        signupForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const name = document.getElementById('signupName').value;
+            const email = document.getElementById('signupEmail').value;
+            const password = document.getElementById('signupPassword').value;
+            const confirmPassword = document.getElementById('signupConfirmPassword').value;
+
+            if (password !== confirmPassword) {
+                errorElement.textContent = "Passwords do not match";
+                errorElement.style.display = 'block';
+            return;
+            }
+            
+            const errorElement = document.getElementById('signupError');
+            const successElement = document.getElementById('signupSuccess');
+            
+            // Reset messages
+            errorElement.style.display = 'none';
+            successElement.style.display = 'none';
+            
+            try {
+                const response = await fetch('/signup', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        name: name,
+                        email: email,
+                        password: password
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    successElement.textContent = data.message;
+                    successElement.style.display = 'block';
+                    
+                    // Clear form
+                    signupForm.reset();
+                    
+                    // Switch to sign in after 2 seconds
+                    setTimeout(() => {
+                        container.classList.remove("right-panel-active");
+                    }, 2000);
+                    
+                } else {
+                    errorElement.textContent = data.message;
+                    errorElement.style.display = 'block';
+                }
+            } catch (error) {
+                errorElement.textContent = 'An error occurred. Please try again.';
+                errorElement.style.display = 'block';
+            }
+        });
+
+        // Sign In Form Submission
+        signinForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const email = document.getElementById('signinEmail').value;
+            const password = document.getElementById('signinPassword').value;
+            
+            const errorElement = document.getElementById('signinError');
+            
+            errorElement.style.display = 'none';
+            
+            try {
+                const response = await fetch('/signin', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        email: email,
+                        password: password
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    // Store user info in localStorage
+                    localStorage.setItem("user", JSON.stringify(data.user));
+                    localStorage.setItem("token", data.token);
+                    if (data.user.role === "admin") {
+                        window.location.href = "/admin";
+                    } else {
+                        window.location.href = "/dashboard";
+                    }
+
+                    // Redirect to dashboard
+                    
+                } else {
+                    errorElement.textContent = data.message;
+                    errorElement.style.display = 'block';
+                }
+            } catch (error) {
+                errorElement.textContent = 'An error occurred. Please try again.';
+                errorElement.style.display = 'block';
+            }
+        });
+    function togglePassword() {
+    const pwd = document.getElementById("signupPassword");
+    const confirmPwd = document.getElementById("signupConfirmPassword");
+
+    const type = pwd.type === "password" ? "text" : "password";
+    pwd.type = type;
+    confirmPwd.type = type;
+}
+    </script>
+    <script>
+        function toggleSigninPassword() {
+         const pwd = document.getElementById("signinPassword");
+         pwd.type = pwd.type === "password" ? "text" : "password";
+}
+        </script>
+    </script>
+    <script>
+/* ---------- SHOW / HIDE RESET PASSWORD ---------- */
+function showForgotForm() {
+    const box = document.getElementById("forgotBox");
+    if (box) {
+        box.style.display = "block";
+        box.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+}
+
+function hideForgotForm() {
+    const box = document.getElementById("forgotBox");
+    if (box) {
+        box.style.display = "none";
+    }
+}
+
+/* ---------- RESET PASSWORD ---------- */
+async function resetPassword() {
+    const email = document.getElementById("fpEmail").value.trim();
+    const password = document.getElementById("fpPassword").value.trim();
+    const confirm = document.getElementById("fpConfirmPassword").value.trim();
+    const msg = document.getElementById("fpMsg");
+
+    msg.innerText = "";
+
+    if (!email || !password || !confirm) {
+        msg.style.color = "red";
+        msg.innerText = "All fields are required";
+        return;
+    }
+
+    if (password !== confirm) {
+        msg.style.color = "red";
+        msg.innerText = "Passwords do not match";
+        return;
+    }
+
+    try {
+        const res = await fetch("/forgot-password", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                email: email,
+                password: password,
+                confirm_password: confirm
+            })
+        });
+
+        const data = await res.json();
+
+        if (data.success) {
+            msg.style.color = "green";
+            msg.innerText = data.message;
+        } else {
+            msg.style.color = "red";
+            msg.innerText = data.message;
+        }
+
+    } catch (err) {
+        msg.style.color = "red";
+        msg.innerText = "Server not responding";
+    }
+}
+
+/* ---------- PASSWORD VISIBILITY ---------- */
+function toggleSigninPassword() {
+    const pwd = document.getElementById("signinPassword");
+    if (pwd) {
+        pwd.type = pwd.type === "password" ? "text" : "password";
+    }
+}
+function logout() {
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    window.location.href = "index.html";
+}
+
+</script>
+
+</body>
+</html>
